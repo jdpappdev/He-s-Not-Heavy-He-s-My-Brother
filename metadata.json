@@ -1,0 +1,6 @@
+{
+  "name": "He's Not Heavy, He's My Brother",
+  "description": "A single-page landing site exploring brotherhood, empathy, and love with immersive scroll-driven card stacks.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
