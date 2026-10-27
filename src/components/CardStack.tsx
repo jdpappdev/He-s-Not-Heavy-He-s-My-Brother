@@ -25,28 +25,6 @@ export function CardStack() {
   const lineRef3 = useRef<HTMLSpanElement | null>(null);
 
   const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(false);
-  const [overflowState, setOverflowState] = useState<{ [id: number]: boolean }>({});
-  const scrollContainerRefs = useRef<{ [id: number]: HTMLDivElement | null }>({});
-
-  const checkOverflow = (id: number) => {
-    const el = scrollContainerRefs.current[id];
-    if (!el) return;
-    const { scrollHeight, clientHeight, scrollTop } = el;
-    const hasOverflow = scrollHeight > clientHeight + 2;
-    const isNotAtEnd = scrollTop + clientHeight < scrollHeight - 4;
-    setOverflowState(prev => ({ ...prev, [id]: hasOverflow && isNotAtEnd }));
-  };
-
-  useEffect(() => {
-    CARDS_CONTENT.forEach(card => {
-      checkOverflow(card.id);
-    });
-    const handleResize = () => {
-      CARDS_CONTENT.forEach(card => checkOverflow(card.id));
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -61,7 +39,6 @@ export function CardStack() {
       const h = window.visualViewport?.height ?? window.innerHeight;
       document.documentElement.style.setProperty('--stage-h', `${h}px`);
       ScrollTrigger.refresh();
-      CARDS_CONTENT.forEach(card => checkOverflow(card.id));
     };
 
     updateStageHeight();
@@ -108,7 +85,7 @@ export function CardStack() {
               <div
                 key={card.id}
                 data-card-id={card.id}
-                className={`w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] h-full max-h-[calc(100svh-2*clamp(16px,4svh,48px))] rounded-[24px] ${card.bgClass} ${card.textClass} p-[clamp(24px,4vw,60px)] flex flex-col shadow-[0_24px_60px_rgba(0,0,0,0.45)] border border-black/10 mx-auto card-content-box`}
+                className={`w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] h-auto max-h-none rounded-[24px] ${card.bgClass} ${card.textClass} p-[clamp(24px,4vw,60px)] flex flex-col shadow-[0_24px_60px_rgba(0,0,0,0.45)] border border-black/10 mx-auto card-content-box`}
               >
                 <div className="card-grid h-full">
                   <div className="flex flex-col shrink-0 md:justify-start md:pr-4">
@@ -128,11 +105,9 @@ export function CardStack() {
                   </div>
 
                   <div 
-                    ref={(el) => { scrollContainerRefs.current[card.id] = el; }}
-                    onScroll={() => checkOverflow(card.id)}
-                    className="card-scroll-container overflow-y-auto overscroll-behavior-contain h-full flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
+                    className="card-body overflow-visible h-auto flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
                   >
-                    <div className="card-body-text w-full pb-4 landscape-body-text">
+                    <div className="card-inner-text card-body-text w-full pb-4 landscape-body-text">
                       {card.paragraphs.map((p, pIndex) => {
                         const isDividerAfter = card.id === 3 && pIndex === 1;
                         return (
@@ -166,9 +141,6 @@ export function CardStack() {
                         );
                       })}
                     </div>
-                    {overflowState[card.id] && (
-                      <div className="pointer-events-none sticky bottom-0 h-8 bg-gradient-to-t from-current/15 to-transparent mt-auto" />
-                    )}
                   </div>
                 </div>
               </div>
@@ -272,13 +244,11 @@ export function CardStack() {
                     </div>
                   </div>
 
-                  {/* Right column / Scrollable content area */}
+                  {/* Right column / Card content area (overflow hidden, inner wrapper moved by GSAP) */}
                   <div 
-                    ref={(el) => { scrollContainerRefs.current[card.id] = el; }}
-                    onScroll={() => checkOverflow(card.id)}
-                    className="card-scroll-container overflow-y-auto overscroll-behavior-contain h-full flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
+                    className="card-body overflow-hidden h-full flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
                   >
-                    <div className="card-body-text w-full pb-4 landscape-body-text">
+                    <div className="card-inner-text card-body-text w-full pb-4 landscape-body-text will-change-transform">
                       {card.paragraphs.map((p, pIndex) => {
                         const isDividerAfter = card.id === 3 && pIndex === 1;
                         return (
@@ -312,9 +282,6 @@ export function CardStack() {
                         );
                       })}
                     </div>
-                    {overflowState[card.id] && (
-                      <div className="pointer-events-none sticky bottom-0 h-8 bg-gradient-to-t from-current/15 to-transparent mt-auto" />
-                    )}
                   </div>
                 </div>
               </div>

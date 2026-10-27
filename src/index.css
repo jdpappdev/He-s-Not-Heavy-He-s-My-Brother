@@ -190,6 +190,28 @@ body {
     animation: none !important;
     transform: none !important;
   }
+  .card-content-box {
+    max-height: none !important;
+    height: auto !important;
+  }
+  .card-body {
+    overflow: visible !important;
+    height: auto !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+  }
+  .card-inner-text {
+    transform: none !important;
+  }
+}
+
+.card-body {
+  overflow: hidden;
+}
+
+.card-body.has-overflow {
+  mask-image: linear-gradient(to bottom, transparent 0px, black 12px, black calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, black 12px, black calc(100% - 24px), transparent 100%);
 }
 
 /* =========================================================================
@@ -318,11 +340,11 @@ body {
     line-height: 1.1 !important;
   }
 
-  .card-scroll-container {
+  .card-body {
     padding-top: 4px !important;
     padding-bottom: 0 !important;
     padding-right: 0 !important;
-    overscroll-behavior-y: auto !important;
+    overflow: hidden !important;
   }
 
   .card-body-text {
