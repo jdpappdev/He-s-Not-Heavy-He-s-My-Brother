@@ -14,9 +14,38 @@ export interface CardStackMotionResult {
   cleanup: () => void;
 }
 
+let activeScrollTrigger: ScrollTrigger | null = null;
+let activeTimeline: gsap.core.Timeline | null = null;
+
+export function getChapterScrollY(index: number): number {
+  const st =
+    activeScrollTrigger ||
+    ScrollTrigger.getAll().find(
+      (s) =>
+        (s.trigger as HTMLElement)?.id === 'card-stack' ||
+        s.vars.trigger === '#card-stack'
+    );
+  if (!st) {
+    const el = document.getElementById('card-stack');
+    return el ? el.offsetTop : 0;
+  }
+  const totalDuration = activeTimeline ? activeTimeline.duration() : 360;
+  // Card entry completion times in timeline units:
+  // Card 0: 40
+  // Card 1: 120
+  // Card 2: 200
+  // Card 3: 280
+  // Card 4: 360
+  const entryTimes = [40, 120, 200, 280, 360];
+  const time = entryTimes[index] ?? 40;
+  const progressWhenEntered = time / totalDuration;
+  return st.start + progressWhenEntered * (st.end - st.start);
+}
+
 export function initCardStackMotion(
   containerRef: HTMLElement | null,
-  cardRefs: HTMLElement[]
+  cardRefs: HTMLElement[],
+  stackWrapperRef?: HTMLElement | null
 ): CardStackMotionResult | null {
   if (!containerRef || cardRefs.length === 0) {
     return null;
@@ -52,92 +81,166 @@ export function initCardStackMotion(
     };
   }
 
-  const stageH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--stage-h')) || window.innerHeight;
-  const entryStartY = stageH + 120;
+  const stageH = containerRef.clientHeight || window.innerHeight;
+  const entryStartY = stageH;
+  const maxDepth = 3;
+  const buriedOffset = Math.min(14, Math.max(8, stageH * 0.016));
+  const maxShift = (maxDepth * buriedOffset) / 2;
 
-  // Initialize card opacities and positions
-  cardRefs.forEach((card, index) => {
-    if (index === 0) {
-      gsap.set(card, { autoAlpha: 1, y: 0, scale: 1, filter: 'brightness(1)' });
-    } else {
-      gsap.set(card, { autoAlpha: 0, y: entryStartY, scale: 1, filter: 'brightness(1)' });
-    }
+  const depthScale = (d: number) => {
+    const capped = Math.min(d, maxDepth);
+    return 1 - 0.04 * capped;
+  };
+  const depthY = (d: number) => {
+    const capped = Math.min(d, maxDepth);
+    return -buriedOffset * capped;
+  };
+
+  cardRefs.forEach((card) => {
+    gsap.set(card, { autoAlpha: 0, y: entryStartY, scale: 1, filter: 'brightness(1)' });
   });
+
+  if (stackWrapperRef) {
+    gsap.set(stackWrapperRef, { y: 0 });
+  }
 
   const timeline = gsap.timeline({
     scrollTrigger: {
       trigger: containerRef,
       start: 'top top',
-      end: '+=400%',
+      end: () => `+=${(timeline.duration() / 100) * (containerRef.clientHeight || window.innerHeight)}`,
       pin: true,
       scrub: true,
       anticipatePin: 1,
     },
   });
 
-  // Card 1 (index 1): Entry [100, 135], Hold [135, 200]
-  // Card 0 drops to depth 1 during [100, 135]
-  timeline.set(cardRefs[1], { autoAlpha: 1 }, 100);
+  if (stackWrapperRef) {
+    timeline.fromTo(
+      stackWrapperRef,
+      { y: 0 },
+      { y: buriedOffset * 0.5, duration: 80, ease: 'none' },
+      80
+    );
+    timeline.to(
+      stackWrapperRef,
+      { y: buriedOffset, duration: 80, ease: 'none' },
+      160
+    );
+    timeline.to(
+      stackWrapperRef,
+      { y: maxShift, duration: 80, ease: 'none' },
+      240
+    );
+  }
+
+  // 5 items mapped across 0 to 400 timeline
+  // Card 0: Entry [0, 40], Hold [40, 80]
+  timeline.set(cardRefs[0], { autoAlpha: 1 }, 0);
+  timeline.fromTo(
+    cardRefs[0],
+    { y: entryStartY, scale: 1, filter: 'brightness(1)' },
+    { y: 0, scale: 1, filter: 'brightness(1)', duration: 40, ease: 'none' },
+    0
+  );
+
+  // Card 1: Entry [80, 120], Hold [120, 160]
+  timeline.set(cardRefs[1], { autoAlpha: 1 }, 80);
   timeline.fromTo(
     cardRefs[1],
     { y: entryStartY, scale: 1, filter: 'brightness(1)' },
-    { y: 0, scale: 1, filter: 'brightness(1)', duration: 35, ease: 'none' },
-    100
+    { y: 0, scale: 1, filter: 'brightness(1)', duration: 40, ease: 'none' },
+    80
   );
   timeline.to(
     cardRefs[0],
-    { scale: 0.95, y: -14, filter: 'brightness(0.85)', duration: 35, ease: 'none' },
-    100
+    { scale: depthScale(1), y: depthY(1), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+    80
   );
 
-  // Card 2 (index 2): Entry [200, 235], Hold [235, 300]
-  // Card 1 drops to depth 1, Card 0 drops to depth 2 during [200, 235]
-  timeline.set(cardRefs[2], { autoAlpha: 1 }, 200);
+  // Card 2: Entry [160, 200], Hold [200, 240]
+  timeline.set(cardRefs[2], { autoAlpha: 1 }, 160);
   timeline.fromTo(
     cardRefs[2],
     { y: entryStartY, scale: 1, filter: 'brightness(1)' },
-    { y: 0, scale: 1, filter: 'brightness(1)', duration: 35, ease: 'none' },
-    200
+    { y: 0, scale: 1, filter: 'brightness(1)', duration: 40, ease: 'none' },
+    160
   );
   timeline.to(
     cardRefs[1],
-    { scale: 0.95, y: -14, filter: 'brightness(0.85)', duration: 35, ease: 'none' },
-    200
+    { scale: depthScale(1), y: depthY(1), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+    160
   );
   timeline.to(
     cardRefs[0],
-    { scale: 0.90, y: -28, filter: 'brightness(0.85)', duration: 35, ease: 'none' },
-    200
+    { scale: depthScale(2), y: depthY(2), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+    160
   );
 
-  // Card 3 (index 3): Entry [300, 335], Hold [335, 400]
-  // Card 2 drops to depth 1, Card 1 drops to depth 2, Card 0 drops to depth 3 during [300, 335]
-  timeline.set(cardRefs[3], { autoAlpha: 1 }, 300);
+  // Card 3: Entry [240, 280], Hold [280, 320]
+  timeline.set(cardRefs[3], { autoAlpha: 1 }, 240);
   timeline.fromTo(
     cardRefs[3],
     { y: entryStartY, scale: 1, filter: 'brightness(1)' },
-    { y: 0, scale: 1, filter: 'brightness(1)', duration: 35, ease: 'none' },
-    300
+    { y: 0, scale: 1, filter: 'brightness(1)', duration: 40, ease: 'none' },
+    240
   );
   timeline.to(
     cardRefs[2],
-    { scale: 0.95, y: -14, filter: 'brightness(0.85)', duration: 35, ease: 'none' },
-    300
+    { scale: depthScale(1), y: depthY(1), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+    240
   );
   timeline.to(
     cardRefs[1],
-    { scale: 0.90, y: -28, filter: 'brightness(0.85)', duration: 35, ease: 'none' },
-    300
+    { scale: depthScale(2), y: depthY(2), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+    240
   );
   timeline.to(
     cardRefs[0],
-    { scale: 0.85, y: -42, filter: 'brightness(0.85)', duration: 35, ease: 'none' },
-    300
+    { scale: depthScale(3), y: depthY(3), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+    240
   );
+
+  // Closing Layer: Entry [320, 360], Hold [360, 400]
+  if (cardRefs[4]) {
+    timeline.set(cardRefs[4], { autoAlpha: 1 }, 320);
+    timeline.fromTo(
+      cardRefs[4],
+      { y: entryStartY, scale: 1, filter: 'brightness(1)' },
+      { y: 0, scale: 1, filter: 'brightness(1)', duration: 40, ease: 'none' },
+      320
+    );
+    timeline.to(
+      cardRefs[3],
+      { scale: depthScale(1), y: depthY(1), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+      320
+    );
+    timeline.to(
+      cardRefs[2],
+      { scale: depthScale(2), y: depthY(2), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+      320
+    );
+    timeline.to(
+      cardRefs[1],
+      { scale: depthScale(3), y: depthY(3), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+      320
+    );
+    timeline.to(
+      cardRefs[0],
+      { scale: depthScale(4), y: depthY(4), filter: 'brightness(0.85)', duration: 40, ease: 'none' },
+      320
+    );
+  }
+
+  activeTimeline = timeline;
+  activeScrollTrigger = timeline.scrollTrigger ?? null;
+  ScrollTrigger.refresh();
 
   return {
     lenis,
     cleanup: () => {
+      activeTimeline = null;
+      activeScrollTrigger = null;
       timeline.kill();
       ScrollTrigger.getAll().forEach((st) => st.kill());
       lenis.destroy();

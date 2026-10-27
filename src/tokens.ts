@@ -9,6 +9,7 @@ export const COLORS = {
   lampBlack: '#000000',
   rawUmber: '#595855',
   verdaccio: '#66654E',
+  ochre: '#C9A66B',
 } as const;
 
 export type ColorToken = keyof typeof COLORS;
