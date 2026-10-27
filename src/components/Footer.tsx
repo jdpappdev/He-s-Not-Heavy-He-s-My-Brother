@@ -12,7 +12,7 @@ export interface FooterProps {
 export function Footer({ onOpenAbout }: FooterProps) {
   return (
     <footer
-      className="relative w-full z-10 flex flex-col items-center justify-center text-center px-4 pb-[clamp(32px,6vh,64px)]"
+      className="relative w-full z-10 flex flex-col items-center justify-center text-center px-4 pb-[clamp(32px,6svh,64px)]"
       style={{ paddingTop: '12svh' }}
     >
       <button

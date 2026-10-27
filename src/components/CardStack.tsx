@@ -108,20 +108,20 @@ export function CardStack() {
               <div
                 key={card.id}
                 data-card-id={card.id}
-                className={`w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] h-full max-h-[calc(100svh-2*clamp(16px,4svh,48px))] rounded-[24px] ${card.bgClass} ${card.textClass} p-[clamp(24px,4vw,60px)] flex flex-col shadow-[0_24px_60px_rgba(0,0,0,0.45)] border border-black/10 mx-auto`}
+                className={`w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] h-full max-h-[calc(100svh-2*clamp(16px,4svh,48px))] rounded-[24px] ${card.bgClass} ${card.textClass} p-[clamp(24px,4vw,60px)] flex flex-col shadow-[0_24px_60px_rgba(0,0,0,0.45)] border border-black/10 mx-auto card-content-box`}
               >
                 <div className="card-grid h-full">
                   <div className="flex flex-col shrink-0 md:justify-start md:pr-4">
-                    <div className="flex flex-col md:flex-row-reverse md:justify-between items-start md:items-center gap-[clamp(12px,1.5vw,24px)] pb-3">
-                      <span className={`text-xs uppercase tracking-widest font-serif ${card.mutedTextClass} whitespace-nowrap shrink-0`}>
+                    <div className="card-header-tags flex flex-col md:flex-row-reverse md:justify-between items-start md:items-center gap-[clamp(12px,1.5vw,24px)] pb-3">
+                      <span className={`card-tag-num text-xs uppercase tracking-widest font-serif ${card.mutedTextClass} whitespace-nowrap shrink-0`}>
                         0{card.id}/04
                       </span>
-                      <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs uppercase tracking-widest font-serif ${card.tagBgClass} whitespace-nowrap shrink-0`}>
+                      <div className={`card-tag-pill inline-flex items-center px-3 py-1 rounded-full text-xs uppercase tracking-widest font-serif ${card.tagBgClass} whitespace-nowrap shrink-0`}>
                         {card.subtitle}
                       </div>
                     </div>
-                    <div className="pt-1 pb-4 border-b border-current/15">
-                      <h2 className="font-serif font-normal tracking-tight text-[clamp(1.5rem,2.5vw,2.75rem)] leading-[1.05] text-balance">
+                    <div className="card-title-container pt-1 pb-4 border-b border-current/15">
+                      <h2 className="card-title font-serif font-normal tracking-tight text-[clamp(1.5rem,2.5vw,2.75rem)] leading-[1.05] text-balance">
                         {card.title}
                       </h2>
                     </div>
@@ -130,27 +130,27 @@ export function CardStack() {
                   <div 
                     ref={(el) => { scrollContainerRefs.current[card.id] = el; }}
                     onScroll={() => checkOverflow(card.id)}
-                    className="overflow-y-auto overscroll-behavior-contain h-full flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
+                    className="card-scroll-container overflow-y-auto overscroll-behavior-contain h-full flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
                   >
-                    <div className="w-full pb-4 landscape-body-text">
+                    <div className="card-body-text w-full pb-4 landscape-body-text">
                       {card.paragraphs.map((p, pIndex) => {
                         const isDividerAfter = card.id === 3 && pIndex === 1;
                         return (
                           <React.Fragment key={pIndex}>
                             {p.type === 'pull' ? (
                               <blockquote
-                                className={`font-serif italic font-light ${card.textClass} border-l-2 border-current pl-4 my-[0.9em] opacity-95 text-[clamp(1.125rem,1.8vw,1.5rem)]`}
+                                className={`card-pull-quote font-serif italic font-light ${card.textClass} border-l-2 border-current pl-4 my-[0.9em] opacity-95 text-[clamp(1.125rem,1.8vw,1.5rem)]`}
                                 dangerouslySetInnerHTML={{ __html: p.text }}
                               />
                             ) : p.type === 'ref' ? (
                               <p
-                                className={`font-sans text-[clamp(0.75rem,0.9vw,0.875rem)] uppercase tracking-widest ${card.mutedTextClass} pt-1 pb-2 opacity-85`}
+                                className={`card-ref-text font-sans text-[clamp(0.75rem,0.9vw,0.875rem)] uppercase tracking-widest ${card.mutedTextClass} pt-1 pb-2 opacity-85`}
                               >
                                 {p.text}
                               </p>
                             ) : p.type === 'final' ? (
                               <p
-                                className={`font-serif font-medium ${card.textClass} my-[0.7em] text-[clamp(1.125rem,1.8vw,1.5rem)]`}
+                                className={`card-final-text font-serif font-medium ${card.textClass} my-[0.7em] text-[clamp(1.125rem,1.8vw,1.5rem)]`}
                                 dangerouslySetInnerHTML={{ __html: p.text }}
                               />
                             ) : (
@@ -177,7 +177,7 @@ export function CardStack() {
 
           {/* Closing panel as a normal block */}
           <div 
-            className="closing-card-container relative overflow-clip rounded-[24px] text-[#E7E5E4] p-0 flex flex-col items-start justify-start text-left border border-[rgba(196,195,182,0.2)] shadow-[0_24px_60px_rgba(0,0,0,0.45)] w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] h-full max-h-[calc(100svh-2*clamp(16px,4svh,48px))] mx-auto"
+            className="closing-card-container card-content-box relative overflow-clip rounded-[24px] text-[#E7E5E4] p-0 flex flex-col items-start justify-start text-left border border-[rgba(196,195,182,0.2)] shadow-[0_24px_60px_rgba(0,0,0,0.45)] w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] h-full max-h-[calc(100svh-2*clamp(16px,4svh,48px))] mx-auto"
           >
             <img 
               src="/closing-texture.webp" 
@@ -196,17 +196,14 @@ export function CardStack() {
                 className="closing-card-statement font-serif italic font-normal tracking-[-0.01em] leading-[1.05] text-[clamp(2.25rem,calc(4.2vw+1.2svh),6rem)] m-0 p-0"
                 style={{ textShadow: 'none' }}
               >
-                <span className="block text-raw-umber" style={{ color: COLORS.rawUmber }}>
+                <span className="closing-line-1-span block text-raw-umber" style={{ color: COLORS.rawUmber }}>
                   A little love
                 </span>
-                <span className="block closing-line-2">
-                  <span className="inline-block text-raw-umber whitespace-nowrap" style={{ color: COLORS.rawUmber }}>
-                    makes the load
-                  </span>
-                  {' '}
-                  <span className="inline-block text-lamp-black" style={{ color: COLORS.lampBlack }}>
-                    lighter.
-                  </span>
+                <span className="closing-line-2-span block text-raw-umber" style={{ color: COLORS.rawUmber }}>
+                  makes the load
+                </span>
+                <span className="closing-line-3-span block text-lamp-black" style={{ color: COLORS.lampBlack }}>
+                  lighter.
                 </span>
               </h2>
             </div>
@@ -220,19 +217,19 @@ export function CardStack() {
     <section
       id="card-stack"
       ref={containerRef}
-      style={{ height: 'var(--stage-h, 100vh)' }}
+      style={{ height: 'var(--stage-h, 100svh)' }}
       className="relative w-full bg-black py-0 flex flex-col items-center overflow-hidden"
     >
       <HeroSilhouette />
 
       {/* Pinned stage: grid centering wrapper using --stage-h */}
       <div 
-        className="w-full grid place-items-center z-10 px-4 md:px-8 overflow-hidden"
-        style={{ height: 'var(--stage-h, 100vh)' }}
+        className="w-full grid place-items-center z-10 px-4 md:px-8 overflow-hidden stage-wrapper-phone"
+        style={{ height: 'var(--stage-h, 100svh)' }}
       >
         <div 
           ref={stackWrapperRef}
-          className="relative grid place-items-center my-auto overflow-visible w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] max-h-[calc(100svh-2*clamp(16px,4svh,48px))]"
+          className="relative grid place-items-center my-auto overflow-visible w-[min(92vw,1040px)] md:w-[min(72vw,1040px)] max-h-[calc(100svh-2*clamp(16px,4svh,48px))] stack-inner-phone"
         >
           {CARDS_CONTENT.map((card, index) => {
             const cardRef =
@@ -259,17 +256,17 @@ export function CardStack() {
                 <div className="card-grid h-full">
                   {/* Left column / Top header area */}
                   <div className="flex flex-col shrink-0 md:justify-start md:pr-4">
-                    <div className="flex flex-col md:flex-row-reverse md:justify-between items-start md:items-center gap-[clamp(12px,1.5vw,24px)] pb-3">
-                      <span className={`text-xs uppercase tracking-widest font-serif ${card.mutedTextClass} whitespace-nowrap shrink-0`}>
+                    <div className="card-header-tags flex flex-col md:flex-row-reverse md:justify-between items-start md:items-center gap-[clamp(12px,1.5vw,24px)] pb-3">
+                      <span className={`card-tag-num text-xs uppercase tracking-widest font-serif ${card.mutedTextClass} whitespace-nowrap shrink-0`}>
                         0{card.id}/04
                       </span>
-                      <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs uppercase tracking-widest font-serif ${card.tagBgClass} whitespace-nowrap shrink-0`}>
+                      <div className={`card-tag-pill inline-flex items-center px-3 py-1 rounded-full text-xs uppercase tracking-widest font-serif ${card.tagBgClass} whitespace-nowrap shrink-0`}>
                         {card.subtitle}
                       </div>
                     </div>
 
-                    <div className="pt-1 pb-4 border-b border-current/15">
-                      <h2 className="font-serif font-normal tracking-tight text-[clamp(1.5rem,2.5vw,2.75rem)] leading-[1.05] text-balance">
+                    <div className="card-title-container pt-1 pb-4 border-b border-current/15">
+                      <h2 className="card-title font-serif font-normal tracking-tight text-[clamp(1.5rem,2.5vw,2.75rem)] leading-[1.05] text-balance">
                         {card.title}
                       </h2>
                     </div>
@@ -279,27 +276,27 @@ export function CardStack() {
                   <div 
                     ref={(el) => { scrollContainerRefs.current[card.id] = el; }}
                     onScroll={() => checkOverflow(card.id)}
-                    className="overflow-y-auto overscroll-behavior-contain h-full flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
+                    className="card-scroll-container overflow-y-auto overscroll-behavior-contain h-full flex flex-col justify-start pt-4 md:pt-0 md:pl-2 pr-4 text-left relative"
                   >
-                    <div className="w-full pb-4 landscape-body-text">
+                    <div className="card-body-text w-full pb-4 landscape-body-text">
                       {card.paragraphs.map((p, pIndex) => {
                         const isDividerAfter = card.id === 3 && pIndex === 1;
                         return (
                           <React.Fragment key={pIndex}>
                             {p.type === 'pull' ? (
                               <blockquote
-                                className={`font-serif italic font-light ${card.textClass} border-l-2 border-current pl-4 my-[0.9em] opacity-95 text-[clamp(1.125rem,1.8vw,1.5rem)]`}
+                                className={`card-pull-quote font-serif italic font-light ${card.textClass} border-l-2 border-current pl-4 my-[0.9em] opacity-95 text-[clamp(1.125rem,1.8vw,1.5rem)]`}
                                 dangerouslySetInnerHTML={{ __html: p.text }}
                               />
                             ) : p.type === 'ref' ? (
                               <p
-                                className={`font-sans text-[clamp(0.75rem,0.9vw,0.875rem)] uppercase tracking-widest ${card.mutedTextClass} pt-1 pb-2 opacity-85`}
+                                className={`card-ref-text font-sans text-[clamp(0.75rem,0.9vw,0.875rem)] uppercase tracking-widest ${card.mutedTextClass} pt-1 pb-2 opacity-85`}
                               >
                                 {p.text}
                               </p>
                             ) : p.type === 'final' ? (
                               <p
-                                className={`font-serif font-medium ${card.textClass} my-[0.7em] text-[clamp(1.125rem,1.8vw,1.5rem)]`}
+                                className={`card-final-text font-serif font-medium ${card.textClass} my-[0.7em] text-[clamp(1.125rem,1.8vw,1.5rem)]`}
                                 dangerouslySetInnerHTML={{ __html: p.text }}
                               />
                             ) : (
@@ -356,27 +353,24 @@ export function CardStack() {
               >
                 <span 
                   ref={lineRef1} 
-                  className="block text-raw-umber will-change-[transform,opacity]" 
+                  className="closing-line-1-span block text-raw-umber will-change-[transform,opacity]" 
                   style={{ color: COLORS.rawUmber }}
                 >
                   A little love
                 </span>
-                <span className="block closing-line-2">
-                  <span 
-                    ref={lineRef2} 
-                    className="inline-block text-raw-umber whitespace-nowrap will-change-[transform,opacity]" 
-                    style={{ color: COLORS.rawUmber }}
-                  >
-                    makes the load
-                  </span>
-                  {' '}
-                  <span 
-                    ref={lineRef3} 
-                    className="inline-block text-lamp-black will-change-[transform,opacity]" 
-                    style={{ color: COLORS.lampBlack }}
-                  >
-                    lighter.
-                  </span>
+                <span 
+                  ref={lineRef2} 
+                  className="closing-line-2-span block text-raw-umber will-change-[transform,opacity]" 
+                  style={{ color: COLORS.rawUmber }}
+                >
+                  makes the load
+                </span>
+                <span 
+                  ref={lineRef3} 
+                  className="closing-line-3-span block text-lamp-black will-change-[transform,opacity]" 
+                  style={{ color: COLORS.lampBlack }}
+                >
+                  lighter.
                 </span>
               </h2>
             </div>

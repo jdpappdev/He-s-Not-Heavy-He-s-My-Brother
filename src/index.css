@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+:root {
+  --header-height: 52px;
+  --header-top: calc(clamp(12px, 2svh, 24px) + env(safe-area-inset-top, 0px));
+  --header-bottom: calc(var(--header-top) + var(--header-height));
+  --card-top: calc(var(--header-bottom) + 8px);
+  --card-max-h-phone: calc(100svh - var(--header-bottom) - 8px - 12px);
+}
+
 @theme {
   --font-serif: "Newsreader", serif;
   --color-gesso: #C4C3B6;
@@ -107,13 +115,19 @@ body {
   .closing-card-statement {
     font-size: min(clamp(2.25rem, calc(4.2vw + 1.2svh), 6rem), 7cqw);
   }
-  .closing-line-2 {
-    white-space: nowrap;
+  .closing-line-2-span {
+    display: inline-block !important;
+    margin-right: 0.28em !important;
+  }
+  .closing-line-3-span {
+    display: inline-block !important;
   }
 }
 
 @media (orientation: portrait), (max-width: 767px) {
-  .closing-line-2 {
+  .closing-line-2-span,
+  .closing-line-3-span {
+    display: block;
     white-space: normal;
   }
 }
@@ -175,5 +189,198 @@ body {
   .hero-cta-btn {
     animation: none !important;
     transform: none !important;
+  }
+}
+
+/* =========================================================================
+   PHONE LAYOUT PATCH (screens 480px wide and narrower, portrait)
+   Strictly uses svh/dvh only (no vh anywhere).
+   ========================================================================= */
+
+@media (max-width: 480px) {
+  /* 1. HERO */
+  .hero-section {
+    min-height: 100svh !important;
+    padding-top: calc(var(--header-bottom) + 12px) !important;
+    padding-bottom: 24px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+  }
+
+  .hero-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    height: auto !important;
+    gap: 0 !important;
+  }
+
+  .hero-image-col {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-bottom: clamp(10px, 1.8svh, 16px) !important;
+  }
+
+  .hero-image-wrapper {
+    height: clamp(170px, 34svh, 38svh) !important;
+    max-height: 38svh !important;
+    width: auto !important;
+    aspect-ratio: 4 / 5 !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+  }
+
+  .hero-text-col {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    gap: 0 !important;
+  }
+
+  .hero-headline {
+    font-size: clamp(1.4rem, 6vw, 1.8rem) !important;
+    line-height: 1.08 !important;
+    margin-bottom: clamp(6px, 1svh, 10px) !important;
+    text-align: center !important;
+  }
+
+  .hero-subline {
+    font-size: clamp(0.92rem, 3.8vw, 1.05rem) !important;
+    line-height: 1.35 !important;
+    margin-bottom: clamp(10px, 1.8svh, 14px) !important;
+    max-width: 320px !important;
+    text-align: center !important;
+  }
+
+  .hero-button-wrapper {
+    padding-top: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .hero-cta-btn {
+    min-height: 48px !important;
+    padding: 0 28px !important;
+    font-size: 1rem !important;
+  }
+
+  /* 2. CHAPTER CARDS */
+  .stage-wrapper-phone {
+    padding-top: var(--card-top) !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  .stack-inner-phone {
+    margin-top: 0 !important;
+    max-height: var(--card-max-h-phone) !important;
+  }
+
+  .card-content-box {
+    padding: 20px !important;
+    max-height: var(--card-max-h-phone) !important;
+    border-radius: 20px !important;
+  }
+
+  .card-tag-num,
+  .card-tag-pill {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+  .card-tag-pill {
+    padding: 2px 8px !important;
+  }
+
+  .card-header-tags {
+    padding-bottom: 6px !important;
+    gap: 8px !important;
+  }
+
+  .card-title-container {
+    border-bottom: none !important;
+    padding-bottom: 6px !important;
+    padding-top: 0 !important;
+  }
+
+  .card-title {
+    font-size: clamp(1.3rem, 6vw, 1.6rem) !important;
+    line-height: 1.1 !important;
+  }
+
+  .card-scroll-container {
+    padding-top: 4px !important;
+    padding-bottom: 0 !important;
+    padding-right: 0 !important;
+    overscroll-behavior-y: auto !important;
+  }
+
+  .card-body-text {
+    font-size: 15px !important;
+    line-height: 1.45 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .card-body-text p {
+    font-size: 15px !important;
+    line-height: 1.45 !important;
+    margin-bottom: 0.6em !important;
+  }
+
+  .card-body-text p:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .card-pull-quote {
+    font-size: clamp(1.15rem, 5vw, 1.4rem) !important;
+    line-height: 1.35 !important;
+    margin-top: 0.6em !important;
+    margin-bottom: 0.6em !important;
+    padding-left: 12px !important;
+  }
+
+  .card-ref-text {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    margin-bottom: 0.6em !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .card-final-text {
+    font-size: 15px !important;
+    line-height: 1.45 !important;
+    margin-top: 0.6em !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 3. CLOSING TEXT */
+  .closing-text-block {
+    top: calc(var(--header-bottom) + 24px) !important;
+    left: 20px !important;
+    right: auto !important;
+    max-width: calc(100% - 40px) !important;
+  }
+
+  .closing-card-statement {
+    font-size: max(2.4rem, 10.5vw) !important;
+    line-height: 1.05 !important;
+  }
+
+  .closing-line-1-span,
+  .closing-line-2-span,
+  .closing-line-3-span {
+    display: block !important;
+    white-space: normal !important;
   }
 }

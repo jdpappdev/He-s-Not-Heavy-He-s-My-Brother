@@ -70,12 +70,12 @@ export function Hero() {
     <section
       ref={containerRef}
       id="hero"
-      className="relative w-full min-h-[100dvh] bg-[#000000] flex items-center justify-center px-[clamp(1rem,3vw,3rem)] py-[clamp(2rem,5vh,4rem)] overflow-hidden"
+      className="relative w-full min-h-[100svh] bg-[#000000] flex items-center justify-center px-[clamp(1rem,3vw,3rem)] py-[clamp(2rem,5svh,4rem)] overflow-hidden hero-section"
     >
       <div className="max-w-7xl w-full mx-auto hero-layout items-center h-full">
         {/* Left column: Hero Image */}
-        <div className="flex items-center justify-center z-10 w-full mb-8 landscape:md:mb-0">
-          <div className="w-full max-w-[min(92vw,480px)] landscape:md:max-w-none aspect-[4/5] rounded-[24px] border border-[rgba(196,195,182,0.25)] shadow-[0_24px_60px_rgba(0,0,0,0.5)] overflow-hidden flex items-center justify-center mx-auto">
+        <div className="flex items-center justify-center z-10 w-full mb-8 landscape:md:mb-0 hero-image-col">
+          <div className="w-full max-w-[min(92vw,480px)] landscape:md:max-w-none aspect-[4/5] rounded-[24px] border border-[rgba(196,195,182,0.25)] shadow-[0_24px_60px_rgba(0,0,0,0.5)] overflow-hidden flex items-center justify-center mx-auto hero-image-wrapper">
             <img
               ref={imageRef}
               src="/hero-1400.webp"
@@ -92,8 +92,8 @@ export function Hero() {
         </div>
 
         {/* Right column: Typography with Read the story button */}
-        <div className="flex flex-col justify-center space-y-[clamp(1rem,2vw,2rem)] z-10">
-          <h1 className="font-serif text-[clamp(2.25rem,4.5vw,5.25rem)] leading-[1.02] font-normal tracking-tight text-[#E7E5E4] text-balance">
+        <div className="flex flex-col justify-center space-y-[clamp(1rem,2vw,2rem)] z-10 hero-text-col">
+          <h1 className="hero-headline font-serif text-[clamp(2.25rem,4.5vw,5.25rem)] leading-[1.02] font-normal tracking-tight text-[#E7E5E4] text-balance">
             <span ref={line1Ref} className="block will-change-[transform,opacity]">
               He&apos;s Not Heavy,
             </span>
@@ -104,12 +104,12 @@ export function Hero() {
 
           <p
             ref={sublineRef}
-            className="font-serif text-[clamp(1.05rem,1.4vw,1.4rem)] text-[#C4C3B6] max-w-xl leading-relaxed font-light will-change-[transform,opacity]"
+            className="hero-subline font-serif text-[clamp(1.05rem,1.4vw,1.4rem)] text-[#C4C3B6] max-w-xl leading-relaxed font-light will-change-[transform,opacity]"
           >
             A little love can make a heavy load feel lighter.
           </p>
 
-          <div ref={buttonWrapperRef} className="pt-2 will-change-[transform,opacity]">
+          <div ref={buttonWrapperRef} className="hero-button-wrapper pt-2 will-change-[transform,opacity]">
             <a
               href="#card-stack"
               onClick={scrollToStack}
