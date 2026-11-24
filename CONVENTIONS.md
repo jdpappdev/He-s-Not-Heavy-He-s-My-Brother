@@ -1,9 +1,10 @@
-# Development Conventions & Standards
+# Development conventions
 
-## Architectural & Coding Rules
-1. **Feature-Based Folders**: Components and utilities are organized by feature domain (e.g., `src/components/`, `src/motion/`, `src/tokens.ts`).
-2. **Tokens in One File**: All design tokens (colors, fonts, spacing constants) are strictly defined in `src/tokens.ts` and imported wherever needed. No hard-coded color hex values elsewhere in components.
-3. **Motion Code Isolation**: All GSAP and ScrollTrigger animation logic must reside exclusively within `src/motion/` (e.g. `src/motion/cardStack.ts`). Components consume motion hooks or setup functions rather than embedding raw ScrollTrigger scripts.
-4. **Strict TypeScript**: No `any` types allowed. Explicitly type all props, state, and animation return objects.
-5. **No Console Logs**: Production code must be completely free of `console.log`, `console.warn`, or debugging statements.
-6. **Intentional Commenting**: Comments must explain **why** a specific decision or math calculation was made (e.g. depth stacking transform math), not **what** the code is doing.
+Keep the site small and easy to follow. The page is composed in `src/App.tsx`; reusable sections live in `src/components/`, story copy in `src/content/`, scroll sequences in `src/motion/`, and shared helpers in `src/lib/`.
+
+- Preserve the meaning and sequence of the story when editing copy. Keep project-specific text out of generic motion helpers.
+- Use `src/tokens.ts` and the CSS variables in `src/index.css` for shared colors. Existing component utility classes also contain some color values; do not assume the palette is fully centralized.
+- Keep scroll timeline setup in `src/motion/` and clean up listeners, triggers, and animation instances when components unmount.
+- Keep the About dialog usable by keyboard and restore focus when it closes.
+- Check both ordinary and reduced-motion behavior when changing transitions or scroll timing.
+- Run `bun run lint` and `bun run build` before publishing. Review the result at desktop and mobile sizes.
