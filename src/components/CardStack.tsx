@@ -12,6 +12,26 @@ import { HEADER_TITLE } from '../content/site';
 import { COLORS } from '../tokens';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+function renderCardCopy(value: string): React.ReactNode {
+  const tokens = value.split(/(<\/?(?:strong|b|br)\s*\/?>)/gi);
+  let emphasized = false;
+  let key = 0;
+
+  return tokens.map((token) => {
+    if (/^<br\s*\/?>$/i.test(token)) return <br key={key++} />;
+    if (/^<(strong|b)>$/i.test(token)) {
+      emphasized = true;
+      return null;
+    }
+    if (/^<\/(strong|b)>$/i.test(token)) {
+      emphasized = false;
+      return null;
+    }
+
+    return emphasized ? <strong key={key++}>{token}</strong> : token;
+  });
+}
+
 export function CardStack() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const stackWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -115,8 +135,9 @@ export function CardStack() {
                             {p.type === 'pull' ? (
                               <blockquote
                                 className={`card-pull-quote font-serif italic font-light ${card.textClass} border-l-2 border-current pl-4 my-[0.9em] opacity-95 text-[clamp(1.125rem,1.8vw,1.5rem)]`}
-                                dangerouslySetInnerHTML={{ __html: p.text }}
-                              />
+                              >
+                                {renderCardCopy(p.text)}
+                              </blockquote>
                             ) : p.type === 'ref' ? (
                               <p
                                 className={`card-ref-text font-sans text-[clamp(0.75rem,0.9vw,0.875rem)] uppercase tracking-widest ${card.mutedTextClass} pt-1 pb-2 opacity-85`}
@@ -126,13 +147,15 @@ export function CardStack() {
                             ) : p.type === 'final' ? (
                               <p
                                 className={`card-final-text font-serif font-medium ${card.textClass} my-[0.7em] text-[clamp(1.125rem,1.8vw,1.5rem)]`}
-                                dangerouslySetInnerHTML={{ __html: p.text }}
-                              />
+                              >
+                                {renderCardCopy(p.text)}
+                              </p>
                             ) : (
                               <p
                                 className={`font-serif font-light mb-[0.7em]`}
-                                dangerouslySetInnerHTML={{ __html: p.text }}
-                              />
+                              >
+                                {renderCardCopy(p.text)}
+                              </p>
                             )}
                             {isDividerAfter && (
                               <div className="w-full h-[1px] bg-[#E7E5E4]/25 my-[clamp(12px,2svh,24px)]" />
@@ -256,8 +279,9 @@ export function CardStack() {
                             {p.type === 'pull' ? (
                               <blockquote
                                 className={`card-pull-quote font-serif italic font-light ${card.textClass} border-l-2 border-current pl-4 my-[0.9em] opacity-95 text-[clamp(1.125rem,1.8vw,1.5rem)]`}
-                                dangerouslySetInnerHTML={{ __html: p.text }}
-                              />
+                              >
+                                {renderCardCopy(p.text)}
+                              </blockquote>
                             ) : p.type === 'ref' ? (
                               <p
                                 className={`card-ref-text font-sans text-[clamp(0.75rem,0.9vw,0.875rem)] uppercase tracking-widest ${card.mutedTextClass} pt-1 pb-2 opacity-85`}
@@ -267,13 +291,15 @@ export function CardStack() {
                             ) : p.type === 'final' ? (
                               <p
                                 className={`card-final-text font-serif font-medium ${card.textClass} my-[0.7em] text-[clamp(1.125rem,1.8vw,1.5rem)]`}
-                                dangerouslySetInnerHTML={{ __html: p.text }}
-                              />
+                              >
+                                {renderCardCopy(p.text)}
+                              </p>
                             ) : (
                               <p
                                 className={`font-serif font-light mb-[0.7em]`}
-                                dangerouslySetInnerHTML={{ __html: p.text }}
-                              />
+                              >
+                                {renderCardCopy(p.text)}
+                              </p>
                             )}
                             {isDividerAfter && (
                               <div className="w-full h-[1px] bg-[#E7E5E4]/25 my-[clamp(12px,2svh,24px)]" />
